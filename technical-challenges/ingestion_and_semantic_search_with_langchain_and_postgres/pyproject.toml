@@ -1,0 +1,40 @@
+[project]
+name = "ingestion-and-semantic-search-with-langchain-and-postgres"
+version = "0.0.1"
+description = "Ingestion and semantic search using LangChain and Postgres"
+requires-python = ">=3.12"
+readme = "README.md"
+license = { text = "MIT" }
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+include = "\.(py|pyi)$"
+exclude = [
+  "^/venv/",
+  "^/.venv/",
+  "^/env/",
+  "^/.eggs/",
+  "^/.git/",
+  "^/.mypy_cache/",
+  "^/.pytest_cache/",
+  "^/.ruff_cache/",
+  "^/build/",
+  "^/dist/"
+]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+py_version = 312
+known_first_party = ["src"]
+# Treat src as the source root to resolve first-party imports correctly
+src_paths = ["src"]
+# Skip typical virtualenv and build dirs
+skip = ["venv", ".venv", "env", "build", "dist", ".git", "__pycache__"]
+# Maintain import section order explicitly (optional with profile=black)
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
