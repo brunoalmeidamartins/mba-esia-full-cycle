@@ -1,9 +1,10 @@
 import os
+
 from dotenv import load_dotenv
-from langchain_openai import OpenAIEmbeddings
-from langchain_postgres import PGVector
 from langchain.prompts import PromptTemplate
 from langchain_core.runnables import chain
+from langchain_openai import OpenAIEmbeddings
+from langchain_postgres import PGVector
 
 load_dotenv()
 
@@ -33,6 +34,7 @@ PERGUNTA DO USUÁRIO:
 
 RESPONDA A "PERGUNTA DO USUÁRIO"
 """
+
 
 @chain
 def search_prompt(input_dict: dict):
