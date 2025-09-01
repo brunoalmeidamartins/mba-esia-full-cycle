@@ -12,29 +12,33 @@ build-backend = "setuptools.build_meta"
 
 [tool.black]
 line-length = 88
-target-version = ["py312"]
-include = "\.(py|pyi)$"
-exclude = [
-  "^/venv/",
-  "^/.venv/",
-  "^/env/",
-  "^/.eggs/",
-  "^/.git/",
-  "^/.mypy_cache/",
-  "^/.pytest_cache/",
-  "^/.ruff_cache/",
-  "^/build/",
-  "^/dist/"
-]
+target-version = ["py39"]
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.direnv
+  | \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.nox
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | migrations
+  | venv
+  | venv*
+)/
+'''
 
 [tool.isort]
 profile = "black"
 line_length = 88
-py_version = 312
-known_first_party = ["src"]
-# Treat src as the source root to resolve first-party imports correctly
-src_paths = ["src"]
-# Skip typical virtualenv and build dirs
-skip = ["venv", ".venv", "env", "build", "dist", ".git", "__pycache__"]
-# Maintain import section order explicitly (optional with profile=black)
 sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+default_section = "THIRDPARTY"
+include_trailing_comma = true
+multi_line_output = 3
+skip = ["migrations", "venv", ".venv"]
