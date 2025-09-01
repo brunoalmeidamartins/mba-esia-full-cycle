@@ -1,3 +1,12 @@
+import os
+from dotenv import load_dotenv
+from langchain_openai import OpenAIEmbeddings
+from langchain_postgres import PGVector
+from langchain.prompts import PromptTemplate
+from langchain_core.runnables import chain
+
+load_dotenv()
+
 PROMPT_TEMPLATE = """
 CONTEXTO:
 {contexto}
@@ -25,5 +34,31 @@ PERGUNTA DO USUÁRIO:
 RESPONDA A "PERGUNTA DO USUÁRIO"
 """
 
-def search_prompt(question=None):
-    pass
+@chain
+def search_prompt(input_dict: dict):
+    question = input_dict["question"]
+    embeddings = OpenAIEmbeddings(model=os.getenv("OPENAI_EMBEDDING_MODEL"))
+    store = PGVector(
+        embeddings=embeddings,
+        collection_name=os.getenv("PG_VECTOR_COLLECTION_NAME"),
+        connection=os.getenv("DATABASE_URL"),
+        use_jsonb=True,
+    )
+    results = store.similarity_search_with_score(question, k=10)
+
+    context = ""
+    for document, score in results:
+        context += document.page_content.strip() + "\n"
+
+    prompt = PromptTemplate(
+        template=PROMPT_TEMPLATE, input_variables=["contexto", "pergunta"]
+    )
+    full_prompt = prompt.format(contexto=context, pergunta=question)
+
+    return full_prompt
+
+
+if __name__ == "__main__":
+    question = "Qual é o faturamento da Gamma IA LTDA?"
+    chain = search_prompt
+    print(chain.invoke({"question": question}))
