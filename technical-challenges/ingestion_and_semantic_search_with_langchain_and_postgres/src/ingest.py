@@ -3,13 +3,11 @@ from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from config import (
-    DATABASE_URL,
     PDF_PATH,
-    PG_VECTOR_COLLECTION_NAME,
     PROVIDER,
+    get_embedding_model_integration,
+    get_store,
 )
-
-from config import get_embedding_model_integration, get_store
 
 
 def ingest_pdf():
