@@ -55,9 +55,10 @@ def ingest_pdf():
         )
         for d in splits
     ]
+
     logger.info("Enriched metadata for %d chunk(s)", len(enriched))
 
-    ids = [f"doc-{i}" for i in range(len(enriched))]
+    ids = [f"doc-{PROVIDER}-{i}" for i in range(len(enriched))]
 
     logger.info("Using provider: %s", PROVIDER)
     store = get_store(get_embedding_model_integration(PROVIDER))
