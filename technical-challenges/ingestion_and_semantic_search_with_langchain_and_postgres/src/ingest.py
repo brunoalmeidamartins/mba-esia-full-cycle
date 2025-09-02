@@ -1,18 +1,15 @@
-import os
-
-from dotenv import load_dotenv
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_core.documents import Document
-from langchain_openai import OpenAIEmbeddings
-from langchain_postgres import PGVector
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-load_dotenv()
+from config import (
+    DATABASE_URL,
+    PDF_PATH,
+    PG_VECTOR_COLLECTION_NAME,
+    PROVIDER,
+)
 
-PDF_PATH = os.getenv("PDF_PATH")
-OPENAI_EMBEDDING_MODEL = os.getenv("OPENAI_EMBEDDING_MODEL")
-PG_VECTOR_COLLECTION_NAME = os.getenv("PG_VECTOR_COLLECTION_NAME")
-DATABASE_URL = os.getenv("DATABASE_URL")
+from .config import get_embedding_model_integration, get_store
 
 
 def ingest_pdf():
@@ -40,14 +37,7 @@ def ingest_pdf():
 
     ids = [f"doc-{i}" for i in range(len(enriched))]
 
-    embeddings = OpenAIEmbeddings(model=OPENAI_EMBEDDING_MODEL)
-
-    store = PGVector(
-        embeddings=embeddings,
-        collection_name=PG_VECTOR_COLLECTION_NAME,
-        connection=DATABASE_URL,
-        use_jsonb=True,
-    )
+    store = get_store(get_embedding_model_integration(PROVIDER))
     store.add_documents(documents=enriched, ids=ids)
 
 
