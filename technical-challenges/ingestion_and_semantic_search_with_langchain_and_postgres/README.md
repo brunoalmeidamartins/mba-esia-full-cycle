@@ -1,4 +1,4 @@
-# Ingestion and Semantic Search with LangChain and Postgres (PGVector)
+# Ingestão e Busca Semântica com LangChain e Postgres (PGVector)
 
 Este desafio implementa um fluxo simples de:
 - Ingestão de um PDF em chunks;
