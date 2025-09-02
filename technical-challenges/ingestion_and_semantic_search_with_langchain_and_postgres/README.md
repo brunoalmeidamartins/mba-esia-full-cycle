@@ -101,13 +101,22 @@ make run
 
 
 ## Execução
-1) Configure o .env conforme sua escolha de provider e banco.
-2) (Opcional) Formate o código
+1) Suba a infraestrutura com Docker (Postgres + PGVector)
+- Na raiz deste desafio, execute:
+
+docker-compose up -d
+
+- Para parar/remover os serviços posteriormente:
+
+docker-compose down
+
+2) Configure o .env conforme sua escolha de provider e banco.
+3) (Opcional) Formate o código
 make format
-3) Faça a ingestão do seu PDF
+4) Faça a ingestão do seu PDF
 make ingest
 - O ingest tem logs estruturados (INFO) com timestamp; falhas geram stack trace.
-4) Rode o chat
+5) Rode o chat
 make run
 - Digite sua pergunta no terminal; use exit para encerrar.
 
