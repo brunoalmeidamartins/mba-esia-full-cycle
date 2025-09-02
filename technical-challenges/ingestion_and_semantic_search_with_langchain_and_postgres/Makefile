@@ -11,4 +11,4 @@ ingest:
 
 # Run chat application
 run:
-	python src.chat
+	python src/chat.py
