@@ -17,7 +17,11 @@ def main():
         if not question:
             continue
         result = chain.invoke({"question": f"{question}"})
-        print(f"RESPOSTA: {result.content}")
+        if isinstance(result, str):
+            answer = result
+        else:
+            answer = result.content
+        print(f"RESPOSTA: {answer}")
         print("=" * 50, "\n")
     print("Obrigado!")
 
