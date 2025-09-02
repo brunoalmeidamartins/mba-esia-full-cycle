@@ -3,8 +3,8 @@ from pathlib import Path
 from typing import Optional, Union
 
 from dotenv import load_dotenv
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from langchain_openai import OpenAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAI, GoogleGenerativeAIEmbeddings
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_postgres import PGVector
 
 # Load environment variables from a .env file if present
@@ -59,8 +59,10 @@ if not (openai_ok or google_ok):
 # Optional: normalize whitespace
 if OPENAI_EMBEDDING_MODEL:
     OPENAI_EMBEDDING_MODEL = OPENAI_EMBEDDING_MODEL.strip()
+    OPENAI_MODEL = "gpt-5-nano"
 if GOOGLE_EMBEDDING_MODEL:
     GOOGLE_EMBEDDING_MODEL = GOOGLE_EMBEDDING_MODEL.strip()
+    GOOGLE_MODEL = "gemini-2.5-flash-lite"
 
 # Provider selection: if OpenAI is configured, prefer it; otherwise use Google
 PROVIDER = "openai" if openai_ok else "google"
@@ -83,3 +85,11 @@ def get_store(embeddings: Union[OpenAIEmbeddings, GoogleGenerativeAIEmbeddings])
         connection=DATABASE_URL,
         use_jsonb=True,
     )
+
+
+def get_chat(provider: str):
+    if provider == "openai":
+        return ChatOpenAI(model=OPENAI_MODEL)
+    elif provider == "google":
+        return GoogleGenerativeAI(model=GOOGLE_MODEL)
+    raise ValueError(f"Invalid provider: {provider}")
