@@ -1,23 +1,25 @@
-from langchain_openai import ChatOpenAI
-
+from config import PROVIDER, get_chat
 from search import search_prompt
 
-model = ChatOpenAI(model="gpt-4.1-mini", temperature=0.1)
+# Mount chain
+model = get_chat(PROVIDER)
 chain = search_prompt | model
 
 
 def main():
-    print("Bem-vindo ao chat de busca!")
+    print("Faça sua pergunta e veja a resposta!")
     print("Digite 'exit' para sair do chat.\n")
     while True:
         print("=" * 50)
-        question = input("Pergunta: ")
+        question = input("PERGUNTA: ")
         if question.lower() == "exit":
             break
+        if not question:
+            continue
         result = chain.invoke({"question": f"{question}"})
-        print(f"Resposta: {result.content}")
+        print(f"RESPOSTA: {result.content}")
         print("=" * 50, "\n")
-    print("Obrigado por usar o chat de busca!")
+    print("Obrigado!")
 
 
 if __name__ == "__main__":
