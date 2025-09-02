@@ -9,7 +9,7 @@ from config import (
     PROVIDER,
 )
 
-from .config import get_embedding_model_integration, get_store
+from config import get_embedding_model_integration, get_store
 
 
 def ingest_pdf():
