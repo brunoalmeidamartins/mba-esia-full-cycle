@@ -1,12 +1,7 @@
-import os
-
-from dotenv import load_dotenv
 from langchain.prompts import PromptTemplate
 from langchain_core.runnables import chain
-from langchain_openai import OpenAIEmbeddings
-from langchain_postgres import PGVector
 
-load_dotenv()
+from config import PROVIDER, get_embedding_model_integration, get_store
 
 PROMPT_TEMPLATE = """
 CONTEXTO:
@@ -39,13 +34,7 @@ RESPONDA A "PERGUNTA DO USUÁRIO"
 @chain
 def search_prompt(input_dict: dict):
     question = input_dict["question"]
-    embeddings = OpenAIEmbeddings(model=os.getenv("OPENAI_EMBEDDING_MODEL"))
-    store = PGVector(
-        embeddings=embeddings,
-        collection_name=os.getenv("PG_VECTOR_COLLECTION_NAME"),
-        connection=os.getenv("DATABASE_URL"),
-        use_jsonb=True,
-    )
+    store = get_store(get_embedding_model_integration(PROVIDER))
     results = store.similarity_search_with_score(question, k=10)
 
     context = ""
