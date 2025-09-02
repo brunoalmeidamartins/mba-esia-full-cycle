@@ -1,8 +1,11 @@
 import os
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 from dotenv import load_dotenv
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
+from langchain_postgres import PGVector
 
 # Load environment variables from a .env file if present
 load_dotenv()
@@ -58,3 +61,25 @@ if OPENAI_EMBEDDING_MODEL:
     OPENAI_EMBEDDING_MODEL = OPENAI_EMBEDDING_MODEL.strip()
 if GOOGLE_EMBEDDING_MODEL:
     GOOGLE_EMBEDDING_MODEL = GOOGLE_EMBEDDING_MODEL.strip()
+
+# Provider selection: if OpenAI is configured, prefer it; otherwise use Google
+PROVIDER = "openai" if openai_ok else "google"
+
+
+def get_embedding_model_integration(
+    provider: str,
+) -> Union[OpenAIEmbeddings, GoogleGenerativeAIEmbeddings]:
+    if provider == "openai":
+        return OpenAIEmbeddings(model=OPENAI_EMBEDDING_MODEL)
+    elif provider == "google":
+        return GoogleGenerativeAIEmbeddings(model=GOOGLE_EMBEDDING_MODEL)
+    raise ValueError(f"Invalid provider: {provider}")
+
+
+def get_store(embeddings: Union[OpenAIEmbeddings, GoogleGenerativeAIEmbeddings]):
+    return PGVector(
+        embeddings=embeddings,
+        collection_name=PG_VECTOR_COLLECTION_NAME,
+        connection=DATABASE_URL,
+        use_jsonb=True,
+    )
