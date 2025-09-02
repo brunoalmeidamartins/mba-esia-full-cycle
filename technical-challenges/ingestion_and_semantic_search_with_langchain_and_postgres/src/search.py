@@ -5,7 +5,7 @@ from config import PROVIDER, get_embedding_model_integration, get_store
 
 PROMPT_TEMPLATE = """
 CONTEXTO:
-{contexto}
+{context}
 
 REGRAS:
 - Responda somente com base no CONTEXTO.
@@ -25,7 +25,7 @@ Pergunta: "Você acha isso bom ou ruim?"
 Resposta: "Não tenho informações necessárias para responder sua pergunta."
 
 PERGUNTA DO USUÁRIO:
-{pergunta}
+{question}
 
 RESPONDA A "PERGUNTA DO USUÁRIO"
 """
@@ -37,14 +37,12 @@ def search_prompt(input_dict: dict):
     store = get_store(get_embedding_model_integration(PROVIDER))
     results = store.similarity_search_with_score(question, k=10)
 
-    context = ""
-    for document, score in results:
-        context += document.page_content.strip() + "\n"
+    context = "\n".join(document.page_content.strip() for document, _ in results)
 
     prompt = PromptTemplate(
-        template=PROMPT_TEMPLATE, input_variables=["contexto", "pergunta"]
+        template=PROMPT_TEMPLATE, input_variables=["context", "question"]
     )
-    full_prompt = prompt.format(contexto=context, pergunta=question)
+    full_prompt = prompt.format(context=context, question=question)
 
     return full_prompt
 
