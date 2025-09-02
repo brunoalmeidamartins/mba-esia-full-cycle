@@ -7,7 +7,7 @@ format:
 
 # Run data ingestion script
 ingest:
-	python src.ingest
+	python src/ingest.py
 
 # Run chat application
 run:
